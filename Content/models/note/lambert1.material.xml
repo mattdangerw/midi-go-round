@@ -1,0 +1,4 @@
+<Material>
+	<Shader source="shaders/model.shader" />
+	<Uniform name="myColor" a="0.22" b="0.5" c="0.75" />
+</Material>
