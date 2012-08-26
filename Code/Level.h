@@ -36,7 +36,7 @@ class Level
 
   void spin(float time);
 
-  void placePlayer( float x, float y, float z );
+  void placePlayer( const float *mat );
   void lockPlayer();
   void unlockPlayer();
 

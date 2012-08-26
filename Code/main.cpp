@@ -110,7 +110,7 @@ int main(int argc, const char* argv[]) {
   }
 
   // Disable vertical synchronization
-  //glfwSwapInterval( 0 );
+  // glfwSwapInterval( 0 );
 
   // Set listeners
   glfwSetWindowCloseCallback( windowCloseListener );
@@ -135,7 +135,7 @@ int main(int argc, const char* argv[]) {
     float currTime = glfwGetTime();
     frame++;
     if( frame % 1000 == 0 ){
-      cout << "Frame rate: " << 1000 / (currTime - lastTime) << endl;
+      cout << "updates/sec: " << 1000 / (currTime - lastTime) << endl;
       lastTime = currTime;
     }
     

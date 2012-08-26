@@ -13,7 +13,7 @@ This game uses ALSA for audio and needs the ALSA libraries and headers. If you d
 
     sudo apt-get install libasound2-dev
 
-Next up get cmake, from their [website](cmake.org), or from the package manager again:
+Next up get cmake, from their website, cmake.org, or from the package manager again:
 
     sudo apt-get install cmake
 
@@ -33,6 +33,6 @@ Libraries Used
 
 - Horde3D: a very compact rendering engine. www.horde3d.org
 - GLFW: a library for input and window management with OpenGL. www.glfw.org
+- GLM: a math library with GLSL syntax. http://glm.g-truc.net/
 - FluidSynth: a midi synthesizer and sequencer. www.fluidsynth.org
 - RTAudio: a library for real time sound rendering. www.music.mcgill.ca/~gary/rtaudio/
-- GLM: a math library with GLSL syntax. http://glm.g-truc.net/

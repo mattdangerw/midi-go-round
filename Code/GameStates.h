@@ -123,6 +123,7 @@ class MessageState : public GameState
     void handleMouseInput( bool down, float x, float y );
 
     bool wasDown, isDown, centered;
+    float mouseX, mouseY;
     vector<string> text;
 
 };

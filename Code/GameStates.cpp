@@ -4,13 +4,28 @@
 #include <algorithm>
 #include <strings.h>
 #include <cmath>
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
+#include <gtx/vector_angle.hpp>
+
+using namespace glm;
 
 #define FONT_SIZE .056f
 #define OPTIONS_PER_PAGE 15
+#define PI 3.141592f
 
 bool iequals(const string& a, const string& b)
 {
   return strcasecmp(a.c_str(), b.c_str()) < 0;
+}
+
+void printVec3( vec3 v ){
+  cout << v.x << " " << v.y << " " << v.z << endl;
+}
+
+void printVec4( vec4 v ){
+  cout << v.x << " " << v.y << " " << v.z << " " << v.w << endl;
 }
 
 GameState::GameState( GameData *gd ) {
@@ -42,16 +57,19 @@ void MenuState::update( float time ) {
   h3dutShowText( title.c_str(), 0.03f, 0.03f, FONT_SIZE, .9, .9, .9, gd->font );
   showPage();
 
-  //calculate location of object at mouse point 4 units from camera
+  //calculate location of object at mouse point 15 units from camera
   //and place the particle emitter there
   if(mouseX > 0) {
-    float orig[3];
-    float dir[3];
-    h3dutPickRay( gd->cam, mouseX, 1 - mouseY, orig, orig + 1, orig + 2, dir, dir + 1, dir + 2 );
-    float dirLen = sqrt( dir[0]*dir[0] + dir[1]*dir[1] + dir[2]*dir[2] );
-    float mul = 15 / dirLen;
-    gd->level->placePlayer(orig[0] + dir[0] * mul,
-      orig[1] + dir[1] * mul, orig[2] + dir[2] * mul);
+    vec3 orig, dir;
+    h3dutPickRay( gd->cam, mouseX, 1 - mouseY, &orig.x, &orig.y, &orig.z, &dir.x, &dir.y, &dir.z );
+    dir = normalize( dir );
+    vec3 eye = orig + dir * 15.0f;
+
+    vec3 axis = cross( vec3(0, 0, 1), dir);
+    float angle = glm::angle( vec3(0, 0, 1), dir);
+    
+    mat4 transform = rotate( translate(mat4(), eye), angle, axis );
+    gd->level->placePlayer( value_ptr( transform ) );
   }
 
   gd->level->spin( time );
@@ -131,6 +149,7 @@ MainMenuState::MainMenuState( GameData *gd ) : MenuState( gd ) {
   options.push_back("Quit");
   h3dSetNodeParent( gd->cam, H3DRootNode );
   h3dSetNodeTransform( gd->cam, 600, 0, 0, 0, 90, 0, 1, 1, 1 );
+  // h3dSetNodeTransMat( gd->cam, value_ptr( lookAt( vec3(-20,0,0), vec3(0,0,0), vec3(0,1,0))));
   gd->level->unlockPlayer();
 }
 
@@ -192,6 +211,7 @@ GameState *TrackMenuState::checkForChange() {
     gd->player->parseSong(selected);
     gd->player->playSong();
     gd->level->lockPlayer();
+    gd->level->handleMouseInput( mouseX );
     return new PlayingState( gd );
   }
   return NULL;
@@ -237,6 +257,8 @@ MessageState::MessageState( GameData *gd ) : GameState( gd ) {
   isDown = false;
   wasDown = false;
   centered = false;
+  mouseX = -1;
+  mouseY = -1;
 }
 
 void MessageState::update( float time ) {
@@ -255,12 +277,27 @@ void MessageState::update( float time ) {
     textY += FONT_SIZE + .02;
   }
 
+  if(mouseX > 0) {
+    vec3 orig, dir;
+    h3dutPickRay( gd->cam, mouseX, 1 - mouseY, &orig.x, &orig.y, &orig.z, &dir.x, &dir.y, &dir.z );
+    dir = normalize( dir );
+    vec3 eye = orig + dir * 15.0f;
+
+    vec3 axis = cross( vec3(0, 0, 1), dir);
+    float angle = glm::angle( vec3(0, 0, 1), dir);
+    
+    mat4 transform = rotate( translate(mat4(), eye), angle, axis );
+    gd->level->placePlayer( value_ptr( transform ) );
+  }
+
   gd->level->spin( time );
 }
 
 void MessageState::handleMouseInput( bool down, float x, float y ){ 
   wasDown = isDown;
   isDown = down;
+  mouseY = y;
+  mouseX = x;
 }
 
 HowToState::HowToState( GameData *gd ) : MessageState( gd ) {

@@ -39,8 +39,6 @@ void Level::init(H3DRes particleSysRes, H3DRes pinwheelRes, H3DRes noteRes) {
 
   player = h3dAddGroupNode( H3DRootNode, "Player" );
   particleSys = h3dAddNodes( player, particleSysRes );
-  h3dSetNodeTransform( particleSys, 0, 0, 0, 0, 180, 0, .5, .5, .5 );
-
 
   H3DNode pinwheel = h3dAddNodes( levelWheel, pinwheelRes );
   h3dSetNodeTransform( pinwheel, 0, 0, 0, 0, 0, 0, WHEEL_RADIUS/11.98, WHEEL_RADIUS/11.98, WHEEL_RADIUS/11.98 );
@@ -111,16 +109,18 @@ void Level::update( float time, double songProgress ){
 }
 
 void Level::unlockPlayer() {
+  h3dSetNodeTransform( particleSys, 0, 0, 0, 0, 170, 0, .5, .5, .5 );
   h3dSetNodeTransform( player, 0, 0, 0, 0, 0, 0, 1, 1, 1 );
   h3dSetNodeParent( player, H3DRootNode );
 }
 
-void Level::placePlayer( float x, float y, float z ) {
-  h3dSetNodeTransform( player, x, y, z, 0, 270, 0, 1, 1, 1 );
+void Level::placePlayer( const float *trans ) {
+  h3dSetNodeTransMat( player, trans );
 }
 
 void Level::lockPlayer() {
   h3dSetNodeTransform( player, 0, 0, 0, 0, 0, 0, 1, 1, 1 );
+  h3dSetNodeTransform( particleSys, 0, 0, 0, 0, 180, 0, .5, .5, .5 );
   h3dSetNodeParent( player, playerAttach );
 }
 
