@@ -13,7 +13,7 @@ This game uses ALSA for audio and needs the ALSA libraries and headers. If you d
 
     sudo apt-get install libasound2-dev
 
-Next up get cmake, from their website, cmake.org, or from the package manager again:
+Next up get cmake, from their website, www.cmake.org, or from the package manager again:
 
     sudo apt-get install cmake
 
