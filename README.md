@@ -31,7 +31,8 @@ Once it builds, your good to go!
 Libraries Used
 --------------
 
-- www.horde3d.org
-- www.glfw.org
-- www.fluidsynth.org
-- www.music.mcgill.ca/~gary/rtaudio/
+- Horde3D: a very compact rendering engine. www.horde3d.org
+- GLFW: a library for input and window management with OpenGL. www.glfw.org
+- FluidSynth: a midi synthesizer and sequencer. www.fluidsynth.org
+- RTAudio: a library for real time sound rendering. www.music.mcgill.ca/~gary/rtaudio/
+- GLM: a math library with GLSL syntax. glm.g-truc.net
