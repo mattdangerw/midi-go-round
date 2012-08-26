@@ -1,4 +1,4 @@
 <Material class="Translucent">
 	<Shader source="shaders/model.shader"/>
-	<Uniform name="myColor" a="0.02" b="0.03" c="0.22" d="0.2"/>
+	<Uniform name="myColor" a="0.02" b="0.05" c="0.32" d="0.2"/>
 </Material>

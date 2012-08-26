@@ -63,12 +63,12 @@ void MenuState::update( float time ) {
     vec3 orig, dir;
     h3dutPickRay( gd->cam, mouseX, 1 - mouseY, &orig.x, &orig.y, &orig.z, &dir.x, &dir.y, &dir.z );
     dir = normalize( dir );
-    vec3 eye = orig + dir * 15.0f;
+    vec3 playerPos = orig + dir * 15.0f;
 
     vec3 axis = cross( vec3(0, 0, 1), dir);
     float angle = glm::angle( vec3(0, 0, 1), dir);
     
-    mat4 transform = rotate( translate(mat4(), eye), angle, axis );
+    mat4 transform = rotate( translate(mat4(), playerPos), angle, axis );
     gd->level->placePlayer( value_ptr( transform ) );
   }
 
@@ -281,12 +281,12 @@ void MessageState::update( float time ) {
     vec3 orig, dir;
     h3dutPickRay( gd->cam, mouseX, 1 - mouseY, &orig.x, &orig.y, &orig.z, &dir.x, &dir.y, &dir.z );
     dir = normalize( dir );
-    vec3 eye = orig + dir * 15.0f;
+    vec3 playerPos = orig + dir * 15.0f;
 
     vec3 axis = cross( vec3(0, 0, 1), dir);
     float angle = glm::angle( vec3(0, 0, 1), dir);
     
-    mat4 transform = rotate( translate(mat4(), eye), angle, axis );
+    mat4 transform = rotate( translate(mat4(), playerPos), angle, axis );
     gd->level->placePlayer( value_ptr( transform ) );
   }
 
@@ -301,8 +301,10 @@ void MessageState::handleMouseInput( bool down, float x, float y ){
 }
 
 HowToState::HowToState( GameData *gd ) : MessageState( gd ) {
-  text.push_back("Someday");
-  text.push_back("These will be instructions on how to play the game.");
+  text.push_back("Select a song and track to play from a midi song.");
+  text.push_back("Vocal tracks tend to be the best to play.");
+  text.push_back("Run into the floating notes to play them.");
+  text.push_back("If you miss the notes will be off!");
 }
 
 GameState *HowToState::checkForChange() { 

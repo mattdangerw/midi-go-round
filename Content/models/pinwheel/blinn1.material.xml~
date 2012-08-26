@@ -1,3 +1,0 @@
-<Material class="Translucent">
-	<Shader source="shaders/model.shader"/>
-</Material>

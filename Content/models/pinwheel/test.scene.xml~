@@ -1,7 +1,0 @@
-<Model name="test" geometry="test.geo">
-
-	<Mesh name="polySurface15" material="anisotropic2.material.xml" batchStart="0" batchCount="3600" vertRStart="0" vertREnd="1223">
-		<Mesh name="#polySurface15" material="anisotropic1.material.xml" batchStart="3600" batchCount="3600" vertRStart="1224" vertREnd="2447" />
-		<Mesh name="#polySurface15" material="blinn1.material.xml" batchStart="7200" batchCount="24000" vertRStart="2448" vertREnd="10451" />
-	</Mesh>
-</Model>

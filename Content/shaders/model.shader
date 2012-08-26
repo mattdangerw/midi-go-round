@@ -149,25 +149,13 @@ void main( void )
 [[VS_SIMPLE]]
 // =================================================================================================
 
-#ifdef _F03_ParallaxMapping
-	#define _F02_NormalMapping
-#endif
-
 #include "shaders/utilityLib/vertCommon.glsl"
-
-#ifdef _F01_Skinning
-	#include "shaders/utilityLib/vertSkinning.glsl"
-#endif
 
 uniform mat4 viewProjMat;
 uniform vec3 viewerPos;
 attribute vec3 vertPos;
 attribute vec2 texCoords0;
 attribute vec3 normal;
-
-#ifdef _F02_NormalMapping
-	attribute vec4 tangent;
-#endif
 
 varying vec4 pos, vsPos;
 varying vec2 texCoords;
@@ -275,6 +263,7 @@ uniform vec4 myColor;
 varying vec4 pos;
 varying vec2 texCoords;
 varying vec3 tsbNormal;
+uniform vec4 customInstData[4];
 
 
 void main( void )
