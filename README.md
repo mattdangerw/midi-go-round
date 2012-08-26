@@ -35,4 +35,4 @@ Libraries Used
 - GLFW: a library for input and window management with OpenGL. www.glfw.org
 - FluidSynth: a midi synthesizer and sequencer. www.fluidsynth.org
 - RTAudio: a library for real time sound rendering. www.music.mcgill.ca/~gary/rtaudio/
-- GLM: a math library with GLSL syntax. glm.g-truc.net
+- GLM: a math library with GLSL syntax. http://glm.g-truc.net/
