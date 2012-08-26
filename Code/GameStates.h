@@ -36,11 +36,12 @@ class GameState
     
     virtual GameState *checkForChange() { return NULL; };
 
-    virtual void update( float time ) {};
+    virtual void update( float time );
 
     virtual void handleMouseInput( bool down, float x, float y ) {};
 
     GameData *gd;
+    float entered, timeInState;
 };
 
 class MenuState : public GameState
@@ -54,12 +55,21 @@ class MenuState : public GameState
 
     void handleMouseInput( bool down, float x, float y );
 
+    bool doneSelecting();
+
     vector<string> options;
     string title;
+    bool backOption;
 
-    bool wasDown, isDown;
-    float mouseY;
-    string selected;
+    int page;
+    bool wasDown;
+    float mouseX, mouseY;
+    string selected, highlighted;
+    vector<string> pageOptions;
+
+    //helpers
+    void showPage();
+    void updatePageOptions();
 };
 
 class MainMenuState : public MenuState

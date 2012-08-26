@@ -30,14 +30,14 @@ Level::~Level(){
 void Level::init(H3DRes particleSysRes, H3DRes pinwheelRes, H3DRes noteRes) {
   this->noteRes = noteRes;
 
-  H3DNode playerAttach = h3dAddGroupNode( H3DRootNode, "PlayerAttachPoint" );
+  playerAttach = h3dAddGroupNode( H3DRootNode, "PlayerAttachPoint" );
   h3dSetNodeTransform( playerAttach, 0, WHEEL_RADIUS, 0.25, 0, 0, 0, 1, 1, 1 );
-  player = h3dAddGroupNode( playerAttach, "Player" );
 
   // Add scene nodes
   levelWheel = h3dAddGroupNode( H3DRootNode, "Level" );
   h3dSetNodeTransform( levelWheel, 0, 0, 0, 0, 0, 0, 1, 1, 1 );
 
+  player = h3dAddGroupNode( H3DRootNode, "Player" );
   particleSys = h3dAddNodes( player, particleSysRes );
   h3dSetNodeTransform( particleSys, 0, 0, 0, 0, 180, 0, .5, .5, .5 );
 
@@ -110,8 +110,29 @@ void Level::update( float time, double songProgress ){
   lastFrameTime = time;
 }
 
+void Level::unlockPlayer() {
+  h3dSetNodeTransform( player, 0, 0, 0, 0, 0, 0, 1, 1, 1 );
+  h3dSetNodeParent( player, H3DRootNode );
+}
+
+void Level::placePlayer( float x, float y, float z ) {
+  h3dSetNodeTransform( player, x, y, z, 0, 270, 0, 1, 1, 1 );
+}
+
+void Level::lockPlayer() {
+  h3dSetNodeTransform( player, 0, 0, 0, 0, 0, 0, 1, 1, 1 );
+  h3dSetNodeParent( player, playerAttach );
+}
+
 void Level::spin( float time ){
+  // Animate particle systems (several emitters in a group node)
+  unsigned int cnt = h3dFindNodes( particleSys, "", H3DNodeTypes::Emitter );
+  for( unsigned int i = 0; i < cnt; ++i ){
+    h3dAdvanceEmitterTime( h3dGetNodeFindResult( i ), 5 * (time - lastFrameTime) );
+  }
+  
   h3dSetNodeTransform( levelWheel, 0, 0, 0, time*10, 0, 0, 1, 1, 1 );
+
   lastFrameTime = time;
 }
 

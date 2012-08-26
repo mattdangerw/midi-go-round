@@ -40,8 +40,10 @@ class MidiPlayer
     //Gets the names of the midi tracks
     vector<string> getTrackNames();
 
+    //Prepares midi song for playback. Takes in the name of the track the user is playing.
+    void parseSong(string trackname);
     //starts the midi song playing. Takes in the name of the track the user is playing.
-    void playSong(string trackname);
+    void playSong();
     //stops the song from playing
     void stopSong();
 

@@ -36,6 +36,9 @@ class Level
 
   void spin(float time);
 
+  void placePlayer( float x, float y, float z );
+  void lockPlayer();
+  void unlockPlayer();
 
   void handleMouseInput(float mx);
 
@@ -70,7 +73,7 @@ class Level
     
   // Engine objects
   H3DRes noteRes;
-  H3DNode player, particleSys, levelWheel;
+  H3DNode playerAttach, player, particleSys, levelWheel;
 
   vector<Note> notes;
   map<int,vector<int> > groupMap;

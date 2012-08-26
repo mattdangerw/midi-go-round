@@ -132,14 +132,14 @@ int main(int argc, const char* argv[]) {
   int frame = 0;
   float lastTime = glfwGetTime();
   while( running ){
+    float currTime = glfwGetTime();
     frame++;
-    if(frame%100 == 0){
-      float currTime = glfwGetTime();
-      cout << "Frame rate: " << 100 / (currTime - lastTime) << endl;
+    if( frame % 1000 == 0 ){
+      cout << "Frame rate: " << 1000 / (currTime - lastTime) << endl;
       lastTime = currTime;
     }
     
-    manager->mainLoop( glfwGetTime() );
+    manager->mainLoop( currTime );
     glfwSwapBuffers();
   }
   

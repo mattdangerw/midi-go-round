@@ -94,11 +94,13 @@ vector<string> MidiPlayer::getTrackNames(){
   return trackNames;
 }
 
-void MidiPlayer::playSong(string trackname){
+void MidiPlayer::parseSong(string trackname){
   //parse the events in the midi
   gameTrack = trackNameToNo[trackname];
   parseEvents();
+}
 
+void MidiPlayer::playSong(){
   for(int i = 0; i < ntracks; i++){
     CallbackData *dat = new CallbackData;
     dat->sound = this;
@@ -279,7 +281,6 @@ void MidiPlayer::parseEvents(){
     if(eventTime > songLength){
       songLength = eventTime;
     }
-    cout << dtick << endl;
   }
 
   int commonTickInterval = 100, mostTimes = 0;
@@ -287,7 +288,6 @@ void MidiPlayer::parseEvents(){
     if(itr->second > mostTimes){
       commonTickInterval = itr->first;
       mostTimes = itr->second;
-      cout << commonTickInterval << endl;
     }
   }
   double beat = dtick * commonTickInterval;
@@ -317,8 +317,6 @@ fluid_event_t *MidiPlayer::getFluidEvent(vector<unsigned char> &bytes){
   //noteon
   else if(code >= 144 && code <= 159){
     unsigned char chan = code - 144;
-    if(bytes[2] < 10 && bytes[2] > 0)
-      cout << int(bytes[2]) << endl;
     if(int(bytes[2]) == 0){
       fluid_event_noteoff(evt, chan, bytes[1]);
       return evt;

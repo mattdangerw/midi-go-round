@@ -31,7 +31,7 @@ Once it builds, your good to go!
 Libraries Used
 --------------
 
-- [Horde3D](www.horde3d.org)
-- [GLFW](www.glfw.org)
-- [FluidSynth](www.fluidsynth.org)
-- [RTAudio](www.music.mcgill.ca/~gary/rtaudio/)
+- www.horde3d.org
+- www.glfw.org
+- www.fluidsynth.org
+- www.music.mcgill.ca/~gary/rtaudio/
