@@ -6,17 +6,10 @@ samplerCube albedoMap = sampler_state
 	Address = Clamp;
 };
 
-// Contexts
-context ATTRIBPASS
+context SOLID
 {
 	VertexShader = compile GLSL VS_GENERAL;
-	PixelShader = compile GLSL FS_ATTRIBPASS;
-}
-
-context AMBIENT
-{
-	VertexShader = compile GLSL VS_GENERAL;
-	PixelShader = compile GLSL FS_AMBIENT;
+	PixelShader = compile GLSL FS_SOLID;
 }
 
 
@@ -37,27 +30,8 @@ void main(void)
 	
 	gl_Position = viewProjMat * pos;
 }
-				
 
-[[FS_ATTRIBPASS]]
-// =================================================================================================
-
-#include "shaders/utilityLib/fragDeferredWrite.glsl"
-
-uniform samplerCube albedoMap;
-varying vec3 viewVec;
-
-void main( void )
-{
-	vec3 albedo = textureCube( albedoMap, viewVec ).rgb;
-	
-	// Set fragment material ID to 2, meaning skybox in this case
-	setMatID( 2.0 );
-	setAlbedo( albedo );
-}
-
-
-[[FS_AMBIENT]]
+[[FS_SOLID]]
 // =================================================================================================
 
 uniform samplerCube albedoMap;

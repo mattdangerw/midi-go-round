@@ -1762,6 +1762,24 @@ DLL int h3dFindNodes( H3DNode startNode, const char *name, int type );
 */
 DLL H3DNode h3dGetNodeFindResult( int index );
 
+/* Function: h3dSetNodeUniforms
+		Sets per-instance uniform data for a node.
+
+	Details:
+		This function sets the custom per-instance uniform data for a node that can be accessed
+		from within a shader. The specified number of floats is copied from the specified memory location.
+		Currently only Model nodes will store this data.
+
+	Parameters:
+		node         - node for which data will be set
+		uniformData  - pointer to float array
+		count        - number of floats to be copied
+		
+	Returns:
+		nothing
+*/
+DLL void h3dSetNodeUniforms( H3DNode node, float *uniformData, int count );
+
 /* Function: h3dCastRay
 		Performs a recursive ray collision query.
 	

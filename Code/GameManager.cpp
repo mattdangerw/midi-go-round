@@ -21,6 +21,8 @@ GameManager::GameManager()
   level = new Level();
   player = NULL;
   state = NULL;
+
+  screenshotNextFrame = false;
 }
 
 bool GameManager::init( MidiPlayer *p )
@@ -54,7 +56,7 @@ bool GameManager::init( MidiPlayer *p )
   // Skybox
   H3DRes skyBoxRes = h3dAddResource( H3DResTypes::SceneGraph, "models/skybox/skybox.scene.xml", 0 );
 
-  fontRes = h3dAddResource( H3DResTypes::Material, "overlays/font.material.xml", 0 );
+  fontRes = h3dAddResource( H3DResTypes::Material, "fonts/font.material.xml", 0 );
 
   // Load resources
   h3dutLoadResourcesFromDisk( "Content" );
@@ -116,6 +118,11 @@ void GameManager::mainLoop( float time )
   h3dClearOverlays();
   // Write all messages to log file
   h3dutDumpMessages();
+
+  if(screenshotNextFrame) {
+    h3dutScreenshot("screenshot.tga");
+    screenshotNextFrame = false;
+  }
 }
 
 void GameManager::updateMouse( bool down, float mx, float my )
@@ -140,4 +147,8 @@ void GameManager::resize( int width, int height )
   h3dSetupCameraView( cam, 45.0f, (float)width / height, 0.1f, 5000.0f );
   h3dResizePipelineBuffers( hdrPipeRes, width, height );
   h3dResizePipelineBuffers( forwardPipeRes, width, height );
+}
+
+void GameManager::screenshot() {
+  screenshotNextFrame = true;
 }

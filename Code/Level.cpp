@@ -1,8 +1,13 @@
 #include "GameManager.h"
 #include <Horde3DUtils.h>
 #include <math.h>
+#include <glm.hpp>
+#include <gtx/color_space.hpp>
+#include <gtc/type_ptr.hpp>
 
 #define WHEEL_RADIUS 200
+
+using namespace glm;
 
 //Takes a note location value from 0 to 1 to an world x coordinate stretching from left to right edge of wheel
 inline float toWheelX( float c ) 
@@ -34,13 +39,13 @@ void Level::init(H3DRes particleSysRes, H3DRes pinwheelRes, H3DRes noteRes) {
   h3dSetNodeTransform( playerAttach, 0, WHEEL_RADIUS, 0.25, 0, 0, 0, 1, 1, 1 );
 
   // Add scene nodes
-  levelWheel = h3dAddGroupNode( H3DRootNode, "Level" );
-  h3dSetNodeTransform( levelWheel, 0, 0, 0, 0, 0, 0, 1, 1, 1 );
+  turnNode = h3dAddGroupNode( H3DRootNode, "Level" );
+  h3dSetNodeTransform( turnNode, 0, 0, 0, 0, 0, 0, 1, 1, 1 );
 
   player = h3dAddGroupNode( H3DRootNode, "Player" );
   particleSys = h3dAddNodes( player, particleSysRes );
 
-  H3DNode pinwheel = h3dAddNodes( levelWheel, pinwheelRes );
+  pinwheel = h3dAddNodes( turnNode, pinwheelRes );
   h3dSetNodeTransform( pinwheel, 0, 0, 0, 0, 0, 0, WHEEL_RADIUS/11.98, WHEEL_RADIUS/11.98, WHEEL_RADIUS/11.98 );
 
   // // Add light source
@@ -94,16 +99,27 @@ void Level::update( float time, double songProgress ){
     h3dAdvanceEmitterTime( h3dGetNodeFindResult( i ), 5 * (time - lastFrameTime) );
   }
 
+  vec4 selectedNoteColor = vec4(rgbColor(vec3(songProgress * 245 + 115, 0.8f, 1.0f)), 1.0f);
+  vec4 noteColor = vec4(rgbColor(vec3(songProgress * 245 + 115, .8f, .5f)), 1.0f);
+  vec4 wheelColor = vec4(rgbColor(vec3(songProgress * 245 + 115, .8f, .2f)), 0.2f);
+  
   // Animate the notes.
   for(int i = 0; i < noteNodes.size(); i++){
     if(!removed[i]){
+      int note = notes[i].note;
+      float notex = float(note - noteMin) / (noteMax - noteMin);
+      if(fabs(notex - playerX) < .1){
+        h3dSetNodeUniforms( noteNodes[i], value_ptr(selectedNoteColor), 4 );
+      }
+      else h3dSetNodeUniforms( noteNodes[i], value_ptr(noteColor), 4 );
       h3dSetNodeTransform( noteNodes[i], 0, .25 * cosf(songProgress * 3.1415926f * 2 / beat) + .25, 
         0, 0, songProgress * 10000, 0, .15, .15, .15 );
     }
   }
 
+  h3dSetNodeUniforms( pinwheel, value_ptr(wheelColor), 4 );
   //spin the wheel. 1 rotation during a song
-  h3dSetNodeTransform( levelWheel, 0, 0, 0, 360 * songProgress, 0, 0, 1, 1, 1 );
+  h3dSetNodeTransform( turnNode, 0, 0, 0, 360 * songProgress, 0, 0, 1, 1, 1 );
 
   lastFrameTime = time;
 }
@@ -131,7 +147,9 @@ void Level::spin( float time ){
     h3dAdvanceEmitterTime( h3dGetNodeFindResult( i ), 5 * (time - lastFrameTime) );
   }
   
-  h3dSetNodeTransform( levelWheel, 0, 0, 0, time*10, 0, 0, 1, 1, 1 );
+  h3dSetNodeTransform( turnNode, 0, 0, 0, time*10, 0, 0, 1, 1, 1 );
+  vec4 passiveColor(0.02f, 0.05f, 0.32f, 0.2f);
+  h3dSetNodeUniforms( pinwheel, value_ptr(passiveColor), 4 );
 
   lastFrameTime = time;
 }
@@ -209,7 +227,7 @@ void Level::setNote(int group, int note, double onset){
 
 void Level::addNoteObj(int noteIndex, float degrees, float c){
   degrees = 360 - degrees;
-  H3DNode attachNode = h3dAddGroupNode( levelWheel, "NoteAttachPoint" + noteIndex );
+  H3DNode attachNode = h3dAddGroupNode( turnNode, "NoteAttachPoint" + noteIndex );
   float rads = degrees * (3.1415926f / 180.0f);
   h3dSetNodeTransform( attachNode, toWheelX(c), WHEEL_RADIUS * cosf(rads), WHEEL_RADIUS * sinf(rads), degrees, 0, 0, 1, 1, 1 );
   H3DNode noteNode = h3dAddNodes( attachNode, noteRes );
@@ -226,7 +244,7 @@ void Level::finalizeNotes(){
     float c = float(n.note - noteMin) / (noteMax - noteMin);
     addNoteObj(i, angle, c);
   }
-  h3dSetNodeTransform( levelWheel, 0, 0, 0, 0, 0, 0, 1, 1, 1 );
+  h3dSetNodeTransform( turnNode, 0, 0, 0, 0, 0, 0, 1, 1, 1 );
 }
 
 int Level::getScore(){

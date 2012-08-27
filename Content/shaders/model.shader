@@ -11,7 +11,6 @@
 
 
 // Samplers
-sampler2D albedoMap;
 sampler2D normalMap = sampler_state
 {
 	Texture = "textures/common/defnorm.tga";
@@ -24,28 +23,7 @@ samplerCube ambientMap = sampler_state
 	MaxAnisotropy = 1;
 };
 
-samplerCube envMap = sampler_state
-{
-	Address = Clamp;
-	Filter = Bilinear;
-	MaxAnisotropy = 1;
-};
-
-// Uniforms
-float4 specParams <
-	string desc_a = "a: specular mask";
-	string desc_b = "b: specular exponent";
-> = {0.1, 16.0, 0, 0};
-
 float4 myColor;
-
-// Contexts
-context ATTRIBPASS
-{
-	VertexShader = compile GLSL VS_GENERAL;
-	PixelShader = compile GLSL FS_ATTRIBPASS;
-}
-
 
 context TRANSLUCENT
 {
@@ -56,10 +34,16 @@ context TRANSLUCENT
 	CullMode = None;
 }	
 
-context AMBIENT
+context SOLID
 {
 	VertexShader = compile GLSL VS_GENERAL;
-	PixelShader = compile GLSL FS_AMBIENT;
+	PixelShader = compile GLSL FS_SOLID;
+}
+
+context DYNAMIC
+{
+	VertexShader = compile GLSL VS_GENERAL;
+	PixelShader = compile GLSL FS_DYNAMIC;
 }
 
 [[VS_GENERAL]]
@@ -146,111 +130,7 @@ void main( void )
 }
 
 
-[[VS_SIMPLE]]
-// =================================================================================================
-
-#include "shaders/utilityLib/vertCommon.glsl"
-
-uniform mat4 viewProjMat;
-uniform vec3 viewerPos;
-attribute vec3 vertPos;
-attribute vec2 texCoords0;
-attribute vec3 normal;
-
-varying vec4 pos, vsPos;
-varying vec2 texCoords;
-
-void main( void )
-{
-	vec3 _normal = normalize( calcWorldVec( normal ) );
-
-	tsbNormal = _normal;
-
-	pos = calcWorldPos( vec4( vertPos, 1.0 ) );
-
-	vsPos = calcViewPos( pos );
-
-	texCoords = texCoords0;
-	gl_Position = viewProjMat * pos;
-}
-
-[[FS_ATTRIBPASS]]
-// =================================================================================================
-
-#ifdef _F03_ParallaxMapping
-	#define _F02_NormalMapping
-#endif
-
-#include "shaders/utilityLib/fragDeferredWrite.glsl" 
-
-uniform vec3 viewerPos;
-uniform vec4 specParams;
-uniform sampler2D albedoMap;
-
-#ifdef _F02_NormalMapping
-	uniform sampler2D normalMap;
-#endif
-
-varying vec4 pos;
-varying vec2 texCoords;
-
-#ifdef _F02_NormalMapping
-	varying mat3 tsbMat;
-#else
-	varying vec3 tsbNormal;
-#endif
-#ifdef _F03_ParallaxMapping
-	varying vec3 eyeTS;
-#endif
-
-void main( void )
-{
-	vec3 newCoords = vec3( texCoords, 0 );
-	
-#ifdef _F03_ParallaxMapping	
-	const float plxScale = 0.03;
-	const float plxBias = -0.015;
-	
-	// Iterative parallax mapping
-	vec3 eye = normalize( eyeTS );
-	for( int i = 0; i < 4; ++i )
-	{
-		vec4 nmap = texture2D( normalMap, newCoords.st * vec2( 1, -1 ) );
-		float height = nmap.a * plxScale + plxBias;
-		newCoords += (height - newCoords.p) * nmap.z * eye;
-	}
-#endif
-
-	// Flip texture vertically to match the GL coordinate system
-	newCoords.t *= -1.0;
-
-	vec4 albedo = texture2D( albedoMap, newCoords.st );
-	
-#ifdef _F05_AlphaTest
-	if( albedo.a < 0.01 ) discard;
-#endif
-	
-#ifdef _F02_NormalMapping
-	vec3 normalMap = texture2D( normalMap, newCoords.st ).rgb * 2.0 - 1.0;
-	vec3 normal = tsbMat * normalMap;
-#else
-	vec3 normal = tsbNormal;
-#endif
-
-	vec3 newPos = pos.xyz;
-
-#ifdef _F03_ParallaxMapping
-	newPos += vec3( 0.0, newCoords.p, 0.0 );
-#endif
-	
-	setMatID( 1.0 );
-	setPos( newPos - viewerPos );
-	setNormal( normalize( normal ) );
-	setAlbedo( albedo.rgb );
-	setSpecMask( specParams.x );
-}
-
-[[FS_AMBIENT]]	
+[[FS_SOLID]]	
 // =================================================================================================
 
 
@@ -274,12 +154,35 @@ void main( void )
 	
 }
 
+[[FS_DYNAMIC]]	
+// =================================================================================================
+
+
+#include "shaders/utilityLib/fragLighting.glsl" 
+
+uniform sampler2D albedoMap;
+uniform samplerCube ambientMap;
+
+varying vec4 pos;
+varying vec2 texCoords;
+varying vec3 tsbNormal;
+uniform vec4 customInstData[4];
+
+
+void main( void )
+{
+	vec3 normal = tsbNormal;
+
+	gl_FragColor.rgb = customInstData[0].xyz * textureCube( ambientMap, normal ).rgb;
+	
+}
+
 [[FS_TRANSLUCENT]]	
 // =================================================================================================
 
 uniform sampler2D albedoMap;
 uniform samplerCube ambientMap;
-uniform vec4 myColor;
+uniform vec4 customInstData[4];
 
 varying vec4 pos;
 varying vec2 texCoords;
@@ -288,5 +191,5 @@ varying vec3 tsbNormal;
 
 void main( void )
 {
-	gl_FragColor = myColor;
+	gl_FragColor = customInstData[0];
 }

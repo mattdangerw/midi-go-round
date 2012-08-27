@@ -24,6 +24,8 @@
 
 namespace Horde3D {
 
+const uint32 ModelCustomInstVecCount = 4;
+
 // =================================================================================================
 // Model Node
 // =================================================================================================
@@ -91,6 +93,8 @@ public:
 	bool updateGeometry();
 	uint32 calcLodLevel( const Vec3f &viewPoint );
 
+	void setCustomInstData( float *data, uint32 count );
+
 	GeometryResource *getGeometryResource() { return _geometryRes; }
 	bool jointExists( uint32 jointIndex ) { return jointIndex < _skinMatRows.size() / 3; }
 	void setSkinningMat( uint32 index, const Matrix4f &mat )
@@ -118,7 +122,9 @@ protected:
 	std::vector< JointNode * >    _jointList;
 	std::vector< Vec4f >          _skinMatRows;
 	AnimationController           _animCtrl;
-
+	
+	Vec4f                         _customInstData[ModelCustomInstVecCount];
+	
 	std::vector< Morpher >        _morphers;
 	bool                          _softwareSkinning, _skinningDirty;
 	bool                          _nodeListDirty;  // An animatable node has been attached to model

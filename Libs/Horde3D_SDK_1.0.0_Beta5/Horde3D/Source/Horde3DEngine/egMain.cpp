@@ -671,6 +671,14 @@ DLLEXP NodeHandle h3dGetNodeFindResult( int index )
 }
 
 
+DLLEXP void h3dSetNodeUniforms( NodeHandle node, float *uniformData, int count )
+{
+	SceneNode *sn = Modules::sceneMan().resolveNodeHandle( node );
+	APIFUNC_VALIDATE_NODE( sn, "h3dSetNodeUniforms", APIFUNC_RET_VOID );
+	sn->setCustomInstData( uniformData, (uint32)count );
+}
+
+
 DLLEXP NodeHandle h3dCastRay( NodeHandle node, float ox, float oy, float oz, float dx, float dy, float dz, int numNearest )
 {
 	SceneNode *sn = Modules::sceneMan().resolveNodeHandle( node );

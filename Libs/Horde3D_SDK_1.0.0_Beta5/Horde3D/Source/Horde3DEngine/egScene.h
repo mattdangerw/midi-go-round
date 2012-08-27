@@ -120,6 +120,8 @@ public:
 	void update();
 	virtual bool checkIntersection( const Vec3f &rayOrig, const Vec3f &rayDir, Vec3f &intsPos ) const;
 
+	virtual void setCustomInstData( float *data, uint32 count ) {}
+
 	int getType() { return _type; };
 	NodeHandle getHandle() { return _handle; }
 	SceneNode *getParent() { return _parent; }

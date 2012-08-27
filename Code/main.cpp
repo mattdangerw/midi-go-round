@@ -185,7 +185,10 @@ void keyPressListener( int key, int action )
   if( action == GLFW_PRESS ) {
     if(key == GLFW_KEY_ESC) {
       running = false;
-    } 
+    }
+    if(key == 'S') {
+      manager->screenshot();
+    }
   }
 }
 

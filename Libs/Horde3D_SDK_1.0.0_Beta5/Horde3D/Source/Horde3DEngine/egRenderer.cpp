@@ -382,6 +382,7 @@ bool Renderer::createShaderComb( const char *vertexShader, const char *fragmentS
 	sc.uni_worldMat = gRDI->getShaderConstLoc( shdObj, "worldMat" );
 	sc.uni_worldNormalMat = gRDI->getShaderConstLoc( shdObj, "worldNormalMat" );
 	sc.uni_nodeId = gRDI->getShaderConstLoc( shdObj, "nodeId" );
+	sc.uni_customInstData = gRDI->getShaderConstLoc( shdObj, "customInstData[0]" );
 	sc.uni_skinMatRows = gRDI->getShaderConstLoc( shdObj, "skinMatRows[0]" );
 	
 	// Lighting uniforms
@@ -1708,6 +1709,11 @@ void Renderer::drawMeshes( const string &shaderContext, const string &theClass, 
 		{
 			float id = (float)meshNode->getHandle();
 			gRDI->setShaderConst( curShader->uni_nodeId, CONST_FLOAT, &id );
+		}
+		if( curShader->uni_customInstData >= 0 )
+		{
+			gRDI->setShaderConst( curShader->uni_customInstData, CONST_FLOAT4,
+			                      &modelNode->_customInstData[0].x, ModelCustomInstVecCount );
 		}
 
 		if( queryObj )

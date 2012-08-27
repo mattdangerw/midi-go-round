@@ -37,12 +37,14 @@ class GameManager
 
     void resize( int width, int height );
 
+    void screenshot();
+
   private:
     GameState *state;
     MidiPlayer *player;
     Level *level;
     
-    bool debugViewMode, wireframeMode;
+    bool debugViewMode, wireframeMode, screenshotNextFrame;
   	
     std::string contentDir;
     // Engine objects

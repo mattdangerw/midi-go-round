@@ -10,7 +10,7 @@ include_directories(Libs/glfw)
 include_directories(Libs/glm)
 include_directories(Libs/fluidsynth-1.1.6/include)
 
-add_definitions(-D__LITTLE_ENDIAN__ -c)
+add_definitions(-D__LITTLE_ENDIAN__)
 add_definitions(-D__LINUX_ALSASEQ__ -D__LINUX_ALSA__)
 
 add_executable(Midi-Go-Round

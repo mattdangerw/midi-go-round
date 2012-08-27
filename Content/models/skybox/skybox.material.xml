@@ -1,5 +1,5 @@
-<Material>
+<Material class="Solid">
 	<Shader source="shaders/skybox.shader"/>
 	
-	<Sampler name="albedoMap" map="models/skybox/space.dds" />
+	<Sampler name="albedoMap" map="textures/space.dds" />
 </Material>

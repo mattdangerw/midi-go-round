@@ -1,3 +1,3 @@
 <Material>
-	<Sampler name="ambientMap" map="textures/gold.dds" />
+	<Sampler name="ambientMap" map="textures/ambient.dds" />
 </Material>

@@ -73,7 +73,7 @@ class Level
     
   // Engine objects
   H3DRes noteRes;
-  H3DNode playerAttach, player, particleSys, levelWheel;
+  H3DNode playerAttach, player, particleSys, turnNode, pinwheel;
 
   vector<Note> notes;
   map<int,vector<int> > groupMap;
