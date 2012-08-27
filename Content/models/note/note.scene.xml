@@ -1,3 +1,3 @@
 <Model name="note" geometry="models/note/note.geo">
-	<Mesh name="polySurface8" material="models/note/lambert1.material.xml" batchStart="0" batchCount="42786" vertRStart="0" vertREnd="7695" />
+	<Mesh name="polySurface8" material="materials/dynamic.material.xml" batchStart="0" batchCount="42786" vertRStart="0" vertREnd="7695" />
 </Model>

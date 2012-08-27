@@ -28,6 +28,7 @@ struct GameData{
 //Forward declaration. Exits the program.
 void quit();
 
+//abstract game state
 class GameState
 {
   public:
@@ -44,6 +45,7 @@ class GameState
     float entered, timeInState;
 };
 
+//generic menu state. subclasses need to define state transitions and menu items
 class MenuState : public GameState
 {
   public:
@@ -111,6 +113,7 @@ class PlayingState : public GameState
 
 };
 
+//Generic state to display a message to the user
 class MessageState : public GameState
 {
   public:
@@ -128,6 +131,7 @@ class MessageState : public GameState
 
 };
 
+//explains the games. briefly
 class HowToState : public MessageState
 {
   public:
@@ -136,6 +140,7 @@ class HowToState : public MessageState
     GameState *checkForChange();
 };
 
+//warns when single track midi is selected
 class BadMidiState : public MessageState
 {
   public:
@@ -144,6 +149,7 @@ class BadMidiState : public MessageState
     GameState *checkForChange();
 };
 
+//shows the final score. and stuff
 class FinalScoreState : public GameState
 {
   public:

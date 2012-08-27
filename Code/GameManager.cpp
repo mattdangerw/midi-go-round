@@ -53,29 +53,27 @@ bool GameManager::init( MidiPlayer *p )
   H3DRes noteRes = h3dAddResource( H3DResTypes::SceneGraph, "models/note/note.scene.xml", 0 );
   // Particle system
   H3DRes particleSysRes = h3dAddResource( H3DResTypes::SceneGraph, "particles/particleSys1/particleSys1.scene.xml", 0 );
-  // Skybox
-  H3DRes skyBoxRes = h3dAddResource( H3DResTypes::SceneGraph, "models/skybox/skybox.scene.xml", 0 );
 
   fontRes = h3dAddResource( H3DResTypes::Material, "fonts/font.material.xml", 0 );
+
+  H3DRes transMatRes = h3dAddResource( H3DResTypes::Material, "materials/translucent.material.xml", 0 );
+
+  H3DRes starMatRes = h3dAddResource( H3DResTypes::Material, "materials/star.material.xml", 0 );
 
   // Load resources
   h3dutLoadResourcesFromDisk( "Content" );
 
-  H3DNode sky = h3dAddNodes( H3DRootNode, skyBoxRes );
-  h3dSetNodeTransform( sky, 0, 0, 0, 0, 0, 0, 1000, 1000, 1000 );
-  h3dSetNodeFlags( sky, H3DNodeFlags::NoCastShadow, true );
-
-  level->init(particleSysRes, pinwheelRes, noteRes);
+  level->init(particleSysRes, pinwheelRes, noteRes, transMatRes, starMatRes );
 
   // Add camera
-  // cam = h3dAddCameraNode( H3DRootNode, "Camera", hdrPipeRes );
-  cam = h3dAddCameraNode( H3DRootNode, "Camera", forwardPipeRes );
+  cam = h3dAddCameraNode( H3DRootNode, "Camera", hdrPipeRes );
+  // cam = h3dAddCameraNode( H3DRootNode, "Camera", forwardPipeRes );
 
   // Customize post processing effects
-  // H3DNode matRes = h3dFindResource( H3DResTypes::Material, "pipelines/postHDR.material.xml" );
-  // h3dSetMaterialUniform( matRes, "hdrExposure", 2.5f, 0, 0, 0 );
-  // h3dSetMaterialUniform( matRes, "hdrBrightThres", 0.5f, 0, 0, 0 );
-  // h3dSetMaterialUniform( matRes, "hdrBrightOffset", 0.08f, 0, 0, 0 );
+  H3DNode matRes = h3dFindResource( H3DResTypes::Material, "pipelines/postHDR.material.xml" );
+  h3dSetMaterialUniform( matRes, "hdrExposure", 2.0f, 0, 0, 0 );
+  h3dSetMaterialUniform( matRes, "hdrBrightThres", 2.0f, 0, 0, 0 );
+  h3dSetMaterialUniform( matRes, "hdrBrightOffset", 0.15f, 0, 0, 0 );
 
   GameData *gd = new GameData();
   gd->level = level;
@@ -144,7 +142,7 @@ void GameManager::resize( int width, int height )
   h3dSetNodeParamI( cam, H3DCamera::ViewportHeightI, height );
   
   // Set virtual camera parameters
-  h3dSetupCameraView( cam, 45.0f, (float)width / height, 0.1f, 5000.0f );
+  h3dSetupCameraView( cam, 45.0f, (float)width / height, 0.1f, 10000.0f );
   h3dResizePipelineBuffers( hdrPipeRes, width, height );
   h3dResizePipelineBuffers( forwardPipeRes, width, height );
 }

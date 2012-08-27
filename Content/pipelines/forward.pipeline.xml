@@ -1,4 +1,5 @@
 <!-- Forward Shading Pipeline -->
+<!-- very fast for debugging and such -->
 <Pipeline>
 	<CommandQueue>
 		<Stage id="Geometry" link="pipelines/globalSettings.material.xml">
@@ -10,8 +11,10 @@
 			<!-- Models shaded with custom data -->
 			<DrawGeometry context="DYNAMIC" class="Dynamic" />
 
+			<DrawGeometry context="STARS" class="Stars" />
+
 			<!-- Transparent elements -->
-			<DrawGeometry context="TRANSLUCENT" class="Translucent" />
+			<DrawGeometry context="TRANSLUCENT" class="Translucent" order="BACK_TO_FRONT"/>
 		</Stage>
 		
 		<Stage id="Overlays">

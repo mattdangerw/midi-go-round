@@ -4,7 +4,11 @@ Midi-Go-Round
 About This Project
 ------------------
 
-A small midi based game for linux. Written for Music, Computing, and Design I at CCRMA.
+Midi-Go-Round is a simply rhythm game using midi files. The game was originally for Music, Computing, and Design I a CCRMA course a Stanford.
+
+Gameplay is simple, the goal is to hit all the "notes" in a level to play a certain instrument from the midi song selected. Midi files, though they don't always sound the best, completely reveal the song structure. This makes it possible to build levels from arbitrary midi files, and distort the song as its being played, depending on user performance.
+
+This was also and excuse to learn about a very compact game engine called Horde3D. It has a flexible rendering pipeline and minimalist design, which drew me to it. Not sure I wouldn't suggest it in the end--there's no support and few examples.
 
 How To Build
 ------------
@@ -27,6 +31,21 @@ There may be additional dependencies you still need (gcc, pthreads...). Watch th
 Once it builds, your good to go!
 
     ./Midi-Go-Round
+
+How To Play
+-----------
+
+To start you select a midi song and track (a single instrument in the song) to play from the first few menus. The track you select will become a level of notes to hit. Vocal tracks tend to be the best to play, but often the tracks are poorly labeled in the Midi file. For the midi songs included here, the vocal tracks are:
+- beatles: Lead Organ 3
+- here comes your man: Chant
+- house of the rising sun: Melody
+- sedated: Voice
+
+You can place any midi track you'd like in the Midis directory, and it will show up in game. There are two types of midi files commonly used, one with a separate track for each instrument and one with all the instruments thrown together. Only type 1 midis, with separate tracks, will work with the game.
+
+There's a bug in the game making the audio wig out occasionally after a few song have been played :( I'd suggest restarting between songs for now.
+
+Press s for a screenshot.
 
 Libraries Used
 --------------

@@ -135,7 +135,7 @@ int main(int argc, const char* argv[]) {
     float currTime = glfwGetTime();
     frame++;
     if( frame % 1000 == 0 ){
-      cout << "updates/sec: " << 1000 / (currTime - lastTime) << endl;
+      cout << "FPS: " << 1000 / (currTime - lastTime) << endl;
       lastTime = currTime;
     }
     

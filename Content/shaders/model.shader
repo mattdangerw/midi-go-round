@@ -23,6 +23,8 @@ samplerCube ambientMap = sampler_state
 	MaxAnisotropy = 1;
 };
 
+sampler2D albedoMap;
+
 float4 myColor;
 
 context TRANSLUCENT
@@ -38,6 +40,12 @@ context SOLID
 {
 	VertexShader = compile GLSL VS_GENERAL;
 	PixelShader = compile GLSL FS_SOLID;
+}
+
+context STARS
+{
+	VertexShader = compile GLSL VS_GENERAL;
+	PixelShader = compile GLSL FS_STARS;
 }
 
 context DYNAMIC
@@ -154,6 +162,26 @@ void main( void )
 	
 }
 
+[[FS_STARS]]	
+// =================================================================================================
+
+
+#include "shaders/utilityLib/fragLighting.glsl" 
+
+uniform sampler2D albedoMap;
+uniform vec4 myColor;
+
+varying vec4 pos;
+varying vec3 tsbNormal;
+varying vec2 texCoords;
+
+void main( void )
+{
+	vec3 normal = tsbNormal;
+
+	gl_FragColor.rgb = myColor.xyz;
+}
+
 [[FS_DYNAMIC]]	
 // =================================================================================================
 
@@ -191,5 +219,5 @@ varying vec3 tsbNormal;
 
 void main( void )
 {
-	gl_FragColor = customInstData[0];
+	gl_FragColor = customInstData[0] * texture2D(albedoMap, texCoords);
 }

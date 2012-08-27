@@ -15,6 +15,7 @@ using namespace glm;
 #define OPTIONS_PER_PAGE 15
 #define PI 3.141592f
 
+//comparator for string sorting. case insensitive
 bool iequals(const string& a, const string& b)
 {
   return strcasecmp(a.c_str(), b.c_str()) < 0;

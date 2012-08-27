@@ -28,14 +28,17 @@ class Level
   Level();
   ~Level();
   
-  void init(H3DRes particleSysRes, H3DRes pinwheelRes, H3DRes noteRes);
+  void init(H3DRes particleSysRes, H3DRes pinwheelRes, H3DRes noteRes,
+    H3DRes transMatRes, H3DRes starMatRes );
 
   void clear();
 
+  //updates the level during normal gameplay
   void update(float time, double songProgress);
-
+  //updates the level with a passive spin only. no notes
   void spin(float time);
 
+  //use to move the player around, when not in game
   void placePlayer( const float *mat );
   void lockPlayer();
   void unlockPlayer();
@@ -50,16 +53,21 @@ class Level
   bool checkNote(int id);
 
   int getScore();
+  //gets the current "powerup level"
+  //0 1 or 2
   int getPowerup();
 
+  //attaches camera to the top of the level, use when in game
   void attachCamera(H3DNode cam);
 
  private:
   //helper methods
+  void addTargetLine(H3DRes transMatRes);
+  void addStars();
   void removeHits();
   void addNoteObj( int id, float degrees, float dx);
 
-  float lastFrameTime;
+  float lastFrameTime, lastHit;
 
   float playerX;
 
@@ -72,8 +80,8 @@ class Level
   int streak;
     
   // Engine objects
-  H3DRes noteRes;
-  H3DNode playerAttach, player, particleSys, turnNode, pinwheel;
+  H3DRes noteRes, starMatRes;
+  H3DNode playerAttach, player, particleSys, turnNode, pinwheel, targetLine;
 
   vector<Note> notes;
   map<int,vector<int> > groupMap;

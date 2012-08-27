@@ -1,0 +1,3 @@
+<Material class="Dynamic">
+	<Shader source="shaders/model.shader" />
+</Material>
