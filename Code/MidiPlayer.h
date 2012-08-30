@@ -16,7 +16,7 @@
 #include <set>
 
 #define SAMPLE float
-#define DAMPING .8
+#define DAMPING .65
 
 using namespace std;
 using namespace stk;

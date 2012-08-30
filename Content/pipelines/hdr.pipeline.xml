@@ -40,17 +40,13 @@
 			<BindBuffer sampler="buf0" sourceRT="BLURBUF2" bufIndex="0" />
 			<SetUniform material="pipelines/postHDR.material.xml" uniform="blurParams" a="0.25" />
 			<DrawQuad material="pipelines/postHDR.material.xml" context="BLUR" />
-			<SwitchTarget target="BLURBUF2" />
-			<BindBuffer sampler="buf0" sourceRT="BLURBUF1" bufIndex="0" />
-			<SetUniform material="pipelines/postHDR.material.xml" uniform="blurParams" a="0.5" />
-			<DrawQuad material="pipelines/postHDR.material.xml" context="BLUR" />
 			<UnbindBuffers />
 		</Stage>
 		
 		<Stage id="Combination">
 			<SwitchTarget target="" />
 			<BindBuffer sampler="buf0" sourceRT="HDRBUF" bufIndex="0" />
-			<BindBuffer sampler="buf1" sourceRT="BLURBUF2" bufIndex="0" />
+			<BindBuffer sampler="buf1" sourceRT="BLURBUF1" bufIndex="0" />
 			<DrawQuad material="pipelines/postHDR.material.xml" context="FINALPASS" />
 			<UnbindBuffers />
 		</Stage>

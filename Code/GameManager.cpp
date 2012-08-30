@@ -17,11 +17,11 @@ GameManager::GameManager()
 {
   debugViewMode = false; wireframeMode = false;
   cam = 0;
-
+  
   level = new Level();
   player = NULL;
   state = NULL;
-
+  
   screenshotNextFrame = false;
 }
 
@@ -48,22 +48,12 @@ bool GameManager::init( MidiPlayer *p )
   // Pipelines
   hdrPipeRes = h3dAddResource( H3DResTypes::Pipeline, "pipelines/hdr.pipeline.xml", 0 );
   forwardPipeRes = h3dAddResource( H3DResTypes::Pipeline, "pipelines/forward.pipeline.xml", 0 );
-  // Meshes
-  H3DRes pinwheelRes = h3dAddResource( H3DResTypes::SceneGraph, "models/pinwheel/test.scene.xml", 0 );
-  H3DRes noteRes = h3dAddResource( H3DResTypes::SceneGraph, "models/note/note.scene.xml", 0 );
-  // Particle system
-  H3DRes particleSysRes = h3dAddResource( H3DResTypes::SceneGraph, "particles/particleSys1/particleSys1.scene.xml", 0 );
-
   fontRes = h3dAddResource( H3DResTypes::Material, "fonts/font.material.xml", 0 );
 
-  H3DRes transMatRes = h3dAddResource( H3DResTypes::Material, "materials/translucent.material.xml", 0 );
-
-  H3DRes starMatRes = h3dAddResource( H3DResTypes::Material, "materials/star.material.xml", 0 );
+  level->loadResources();
 
   // Load resources
   h3dutLoadResourcesFromDisk( "Content" );
-
-  level->init(particleSysRes, pinwheelRes, noteRes, transMatRes, starMatRes );
 
   // Add camera
   cam = h3dAddCameraNode( H3DRootNode, "Camera", hdrPipeRes );
@@ -72,8 +62,10 @@ bool GameManager::init( MidiPlayer *p )
   // Customize post processing effects
   H3DNode matRes = h3dFindResource( H3DResTypes::Material, "pipelines/postHDR.material.xml" );
   h3dSetMaterialUniform( matRes, "hdrExposure", 2.0f, 0, 0, 0 );
-  h3dSetMaterialUniform( matRes, "hdrBrightThres", 2.0f, 0, 0, 0 );
+  h3dSetMaterialUniform( matRes, "hdrBrightThres", 1.6f, 0, 0, 0 );
   h3dSetMaterialUniform( matRes, "hdrBrightOffset", 0.15f, 0, 0, 0 );
+
+  level->build();
 
   GameData *gd = new GameData();
   gd->level = level;
@@ -81,7 +73,7 @@ bool GameManager::init( MidiPlayer *p )
   gd->font = fontRes;
   gd->cam = cam;
   state = new MainMenuState( gd );
-
+  
   return true;
 }
 

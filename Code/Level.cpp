@@ -8,6 +8,7 @@
 #include <gtx/vector_angle.hpp>
 #include <gtx/rotate_vector.hpp>
 
+using namespace glm;
 
 #define WHEEL_RADIUS 200
 
@@ -15,8 +16,6 @@ inline float randFloat(float low, float high)
 {
   return low + (float)rand()/((float)RAND_MAX/(high-low));
 }
-
-using namespace glm;
 
 //Takes a note location value from 0 to 1 to an world x coordinate
 //stretching from left to right edge of wheel
@@ -37,32 +36,47 @@ Level::Level(){
   streak = 0;
 
   beat = 0;
+  lastHit = -999;
 }
 
 Level::~Level(){
 }
 
-//sets up the wheel and the particle emmiter and such
-void Level::init(H3DRes particleSysRes, H3DRes pinwheelRes, H3DRes noteRes,
-  H3DRes transMatRes, H3DRes starMatRes ) {
-  this->noteRes = noteRes;
-  this->starMatRes = starMatRes;
+void Level::loadResources() {
+  // Meshes
+  pinwheelRes = h3dAddResource( H3DResTypes::SceneGraph, "models/pinwheel/test.scene.xml", 0 );
+  noteRes = h3dAddResource( H3DResTypes::SceneGraph, "models/note/note.scene.xml", 0 );
+  
+  // Particle system
+  fireRes = h3dAddResource( H3DResTypes::SceneGraph, "particles/fire/fire.scene.xml", 0 );
+  noteExplosionRes = h3dAddResource( H3DResTypes::SceneGraph, "particles/noteExplosion/noteExplosion.scene.xml", 0 );
 
+  // Materials
+  transMatRes = h3dAddResource( H3DResTypes::Material, "materials/translucent.material.xml", 0 );
+  starMatRes = h3dAddResource( H3DResTypes::Material, "materials/star.material.xml", 0 );
+}
+
+//sets up the wheel and the particle emmiter and such
+void Level::build() {
+  // Add scene nodes
+  //Set up player and nodes for player manipulation
   playerAttach = h3dAddGroupNode( H3DRootNode, "PlayerAttachPoint" );
   h3dSetNodeTransform( playerAttach, 0, WHEEL_RADIUS, 0.25, 0, 0, 0, 1, 1, 1 );
 
-  // Add scene nodes
+  player = h3dAddGroupNode( H3DRootNode, "Player" );
+  fireNode = h3dAddNodes( player, fireRes );
+
+  //add level wheel and node to turn wheel
   turnNode = h3dAddGroupNode( H3DRootNode, "Level" );
   h3dSetNodeTransform( turnNode, 0, 0, 0, 0, 0, 0, 1, 1, 1 );
-
-  player = h3dAddGroupNode( H3DRootNode, "Player" );
-  particleSys = h3dAddNodes( player, particleSysRes );
 
   pinwheel = h3dAddNodes( turnNode, pinwheelRes );
   h3dSetNodeTransform( pinwheel, 0, 0, 0, 0, 0, 0, WHEEL_RADIUS/11.98, WHEEL_RADIUS/11.98, WHEEL_RADIUS/11.98 );
 
+  //adds line to the very top of the level
   addTargetLine(transMatRes);
 
+  //add in our star background
   addStars();
 }
 
@@ -141,7 +155,7 @@ void Level::addStars() {
   }
 }
 
-void Level::clear(){
+void Level::clearNotes(){
   lastFrameTime = -1;
 
   playerX = .5;
@@ -174,14 +188,22 @@ void Level::update( float time, double songProgress ){
   removeHits();
 
   vec3 starColor(.5f, .5f, 0.8f);
-  float mul = 1.0f / ((time - lastHit) * 2 + .4f);
-  starColor += vec3(0.2f, 0.2f, 1.0f) * mul;
+  float mul = 0.8f / ((time - lastHit) * 2 + .5f);
+  starColor += vec3(mul);
   h3dSetMaterialUniform(starMatRes, "myColor", starColor.x, starColor.y, starColor.z, 1.0f);
 
   // Animate particle systems (several emitters in a group node)
-  unsigned int cnt = h3dFindNodes( particleSys, "", H3DNodeTypes::Emitter );
+  unsigned int cnt = h3dFindNodes( fireNode, "", H3DNodeTypes::Emitter );
   for( unsigned int i = 0; i < cnt; ++i ){
     h3dAdvanceEmitterTime( h3dGetNodeFindResult( i ), 5 * (time - lastFrameTime) );
+  }
+
+  for (int i = 0; i < noteExplosions.size(); i++) {
+    H3DNode emitter = noteExplosions[i];
+    unsigned int cnt = h3dFindNodes( emitter, "", H3DNodeTypes::Emitter );
+    for (int j = 0; j < cnt; j++) {
+      h3dAdvanceEmitterTime( h3dGetNodeFindResult( j ), (time - lastFrameTime) );
+    }
   }
 
   float hueAngle = songProgress * 245 + 115;
@@ -214,7 +236,7 @@ void Level::update( float time, double songProgress ){
 }
 
 void Level::unlockPlayer() {
-  h3dSetNodeTransform( particleSys, 0, 0, 0, 0, 170, 0, .5, .5, .5 );
+  h3dSetNodeTransform( fireNode, 0, 0, 0, 0, 170, 0, .5, .5, .5 );
   h3dSetNodeTransform( player, 0, 0, 0, 0, 0, 0, 1, 1, 1 );
   h3dSetNodeParent( player, H3DRootNode );
 }
@@ -225,13 +247,13 @@ void Level::placePlayer( const float *trans ) {
 
 void Level::lockPlayer() {
   h3dSetNodeTransform( player, 0, 0, 0, 0, 0, 0, 1, 1, 1 );
-  h3dSetNodeTransform( particleSys, 0, 0, 0, 0, 180, 0, .5, .5, .5 );
+  h3dSetNodeTransform( fireNode, 0, 0, 0, 0, 180, 0, .5, .5, .5 );
   h3dSetNodeParent( player, playerAttach );
 }
 
 void Level::spin( float time ){
   // Animate particle systems (several emitters in a group node)
-  unsigned int cnt = h3dFindNodes( particleSys, "", H3DNodeTypes::Emitter );
+  unsigned int cnt = h3dFindNodes( fireNode, "", H3DNodeTypes::Emitter );
   for( unsigned int i = 0; i < cnt; ++i ){
     h3dAdvanceEmitterTime( h3dGetNodeFindResult( i ), 5 * (time - lastFrameTime) );
   }
@@ -242,19 +264,32 @@ void Level::spin( float time ){
 
   float hueAngle = 115;
   vec4 wheelColor = vec4(rgbColor(vec3(hueAngle, .8f, .2f)), 0.2f);
-  vec4 lineColor = vec4(rgbColor(vec3(hueAngle, .6f, 5.0f)), 1.0f);
 
-  h3dSetNodeUniforms( targetLine, value_ptr(lineColor), 4 );
+  h3dSetNodeUniforms( targetLine, value_ptr(wheelColor), 4 );
   h3dSetNodeUniforms( pinwheel, value_ptr(wheelColor), 4 );
 
   lastFrameTime = time;
 }
 
 void Level::removeHits(){
+  vector<H3DNode>::iterator iter = noteExplosions.begin();
+  while( iter != noteExplosions.end() ) {
+    int cnt = h3dFindNodes( *iter, "", H3DNodeTypes::Emitter );
+    int stillGoing = cnt;
+    for (int j = 0; j < cnt; j++) {
+      if(h3dHasEmitterFinished(h3dGetNodeFindResult(j))) stillGoing--;
+    }
+    if ( stillGoing == 0 ) {
+      h3dRemoveNode(*iter);
+      iter = noteExplosions.erase(iter);
+    }
+    else iter++;
+  }
   for(int i = 0; i < toRemove.size(); i++) {
     int noteIndex = toRemove[i];
     h3dRemoveNode(noteNodes[noteIndex]);
-    h3dRemoveNode(attachPoints[noteIndex]);
+    // h3dRemoveNode(attachPoints[noteIndex]);
+    noteExplosions.push_back(h3dAddNodes(attachPoints[noteIndex], noteExplosionRes));
     removed[noteIndex] = true;
   }
   toRemove.clear();

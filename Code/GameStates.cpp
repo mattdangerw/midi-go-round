@@ -351,7 +351,7 @@ void FinalScoreState::handleMouseInput( bool down, float x, float y ){
 GameState *FinalScoreState::checkForChange() {
   if( isDown && ! wasDown ) {
     gd->player->clear();
-    gd->level->clear();
+    gd->level->clearNotes();
     return new MainMenuState( gd );
   }
   return NULL;

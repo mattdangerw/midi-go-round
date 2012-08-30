@@ -6,7 +6,7 @@
 //
 // This file has all the nasty setting up code.
 // Gets RTAudio up and running. Sets up GLFW and passes user input down to the game manager.
-// Sets up Hoard and starts the main game loop.
+// Sets up Horde and starts the main game loop.
 //
 // *************************************************************************************************
 
@@ -95,7 +95,7 @@ int main(int argc, const char* argv[]) {
   }
   catch( RtError & err ) {
     err.printMessage();
-    //cleanup();
+    cleanup();
   }
 
   glfwInit();
@@ -172,6 +172,8 @@ void cleanup(){
     audio->closeStream();
     delete audio;
   }
+
+  exit(0);
 }
 
 int windowCloseListener()

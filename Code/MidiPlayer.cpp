@@ -1,7 +1,7 @@
 #include "MidiPlayer.h"
 #include <sstream>
 
-#define DAMPING .8
+#define DAMPING .65
 
 MidiPlayer::MidiPlayer(){
   gameTrack = 1;
@@ -31,10 +31,14 @@ bool MidiPlayer::init(string filename, Level *l){
 
 void MidiPlayer::clear(){
   delete mf;
+  gameTrack = 1;
 
   for(int i = 0; i < callback_ids.size(); i++){
     fluid_sequencer_unregister_client(sequencer, callback_ids[i]);
   }
+  delete_fluid_sequencer(sequencer);
+  sequencer = new_fluid_sequencer2(0);
+  synthSeqID = fluid_sequencer_register_fluidsynth(sequencer, synth);
 
   changedNotes.clear();
   trackNameToNo.clear();
@@ -191,6 +195,11 @@ void MidiPlayer::playCurrEvent(short track){
         int channel = fluid_event_get_channel(evt);
         short vel = fluid_event_get_velocity(evt);
         fluid_event_channel_pressure(evt, channel, short(vel * DAMPING));
+      }
+      else if(evtType == FLUID_SEQ_NOTEOFF){
+        short note = fluid_event_get_key(evt);
+        int channel = fluid_event_get_channel(evt);
+        fluid_event_noteoff(evt, channel, note);
       }
     }
     if(evt)

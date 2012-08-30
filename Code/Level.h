@@ -28,10 +28,10 @@ class Level
   Level();
   ~Level();
   
-  void init(H3DRes particleSysRes, H3DRes pinwheelRes, H3DRes noteRes,
-    H3DRes transMatRes, H3DRes starMatRes );
+  void loadResources();
+  void build();
 
-  void clear();
+  void clearNotes();
 
   //updates the level during normal gameplay
   void update(float time, double songProgress);
@@ -79,14 +79,19 @@ class Level
   int score;
   int streak;
     
-  // Engine objects
-  H3DRes noteRes, starMatRes;
-  H3DNode playerAttach, player, particleSys, turnNode, pinwheel, targetLine;
+  // Engine recourses
+  H3DRes pinwheelRes, noteRes;
+  H3DRes fireRes, noteExplosionRes;
+  H3DRes starMatRes, transMatRes;
+  // Engine nodes
+  H3DNode playerAttach, player;
+  H3DNode fireNode, turnNode, pinwheel, targetLine;
+  vector<H3DNode> attachPoints;
+  vector<H3DNode> noteNodes;
+  vector<H3DNode> noteExplosions;
 
   vector<Note> notes;
   map<int,vector<int> > groupMap;
-  vector<H3DRes> attachPoints;
-  vector<H3DRes> noteNodes;
 
   vector<bool> removed;
   vector<int> toRemove;

@@ -1,0 +1,5 @@
+<Group>
+	<Emitter name="GlowingBall" material="particles/glowingBall/glowingBall.material.xml" particleEffect="particles/glowingBall/glowingBall.particle.xml"
+			 maxCount="60" respawnCount="-1" delay="0" emissionRate="20" spreadAngle="360"
+			 forceX="0" forceY="0" forceZ="0" />
+</Group>

@@ -1,0 +1,5 @@
+<Group>
+	<Emitter name="NoteExplosion" material="particles/noteExplosion/noteExplosion.material.xml" particleEffect="particles/noteExplosion/noteExplosion.particle.xml"
+			 maxCount="300" respawnCount="1" delay="0" emissionRate="8000" spreadAngle="60"
+			 forceX="0" forceY="4" forceZ=".5" />
+</Group>
