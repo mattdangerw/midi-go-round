@@ -28,7 +28,7 @@ Then it will hopefully be as easy as going to the home directory of the project 
 
 There may be additional dependencies you still need (gcc, pthreads...). Watch the output from invoking cmake.
 
-Once it builds, your good to go!
+With luck, once it builds you'll be good to go. If it still fails to run properly once built, you might want to check that alsa is properly set up and ready to run on your computer.
 
     ./Midi-Go-Round
 
@@ -55,3 +55,8 @@ Libraries Used
 - GLM: a math library with GLSL syntax. http://glm.g-truc.net/
 - FluidSynth: a midi synthesizer and sequencer. www.fluidsynth.org
 - RTAudio: a library for real time sound rendering. www.music.mcgill.ca/~gary/rtaudio/
+
+Screenshots
+-----------
+
+![Screenshot1](https://github.com/mattdangerw/midi-go-round/blob/master/Screenshots/screenshot1.png)
