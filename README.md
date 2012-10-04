@@ -59,4 +59,5 @@ Libraries Used
 Screenshots
 -----------
 
-![Screenshot1](https://github.com/mattdangerw/midi-go-round/blob/master/Screenshots/screenshot1.png)
+![Screenshot1](https://raw.github.com/mattdangerw/midi-go-round/master/Screenshots/screenshot1.png)
+![Screenshot2](https://raw.github.com/mattdangerw/midi-go-round/master/Screenshots/screenshot3.png)
